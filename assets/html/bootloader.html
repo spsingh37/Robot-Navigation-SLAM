@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manually Enter Bootloader Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .note {
+            background-color: #f9f9f9;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .warning {
+            color: red;
+        }
+        .code {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 2px 4px;
+            font-family: Consolas, "Courier New", monospace;
+        }
+        .commands {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: Consolas, "Courier New", monospace;
+        }
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manually Enter Bootloader Mode</h1>
+    <div class="note">
+        <p>This post explains how to manually enter bootloader mode and flash calibration scripts and firmware to your MBot.</p>
+    </div>
+    <p class="warning">These instructions serve as an alternative to “MBot System Setup -> Set Up MBot Firmware -> 2. Calibrate the MBot and Flash the Firmware.”</p>
+    <p>Use the method described here <strong>only</strong> if the one in the system setup post is unsuccessful.</p>
+    <p>There are 2 ways to manually enter the bootloader mode (namely let the pico ready to receive the scripts), <strong>you only need to pick one to implement!</strong></p>
+    
+    <h2>Method #1 RST button + BOOTSEL button (Recommended)</h2>
+    <ol>
+        <li>Initiate a remote connection with VSCode.</li>
+        <li>Enter bootloader mode
+            <ul>
+                <li>a. Press and hold RST button and then press hold BOOTSEL button (you are pressing 2 buttons now).</li>
+                <li>b. Let go RST button while still pressing BOOTSEL (you are pressing 1 button now).</li>
+                <li>c. Let go BOOTSEL.</li>
+            </ul>
+            <p>The BOOTSEL button is indicated in the image, with the RST button located on the opposite side of the Type-C socket.</p>
+            <img src="path/to/your/image.png" alt="Bootloader Mode">
+            <p>Now your pico is in the bootloader mode, you can flash the .uf2 file to it now.</p>
+            <ul>
+                <li>The calibration script, <span class="code">mbot_firmware/build/tests/mbot_calibrate_classic.uf2</span></li>
+                <li>The MBot firmware, <span class="code">mbot_firmware/build/src/mbot.uf2</span></li>
+            </ul>
+        </li>
+        <li>Upload the calibration file by the following commands:
+            <div class="commands">
+                <p>$ <span class="code">cd ~/Robot-Navigation-SLAM/mbot_firmware</span></p>
+                <p>$ <span class="code">sudo picotool load build/tests/mbot_calibrate_classic.uf2</span></p>
+            </div>
+        </li>
+        <li>Place the MBot on the floor in a spot with at least 2 feet of clear space all around the robot.
+            <div class="commands">
+                <p>$ <span class="code">sudo picotool reboot</span></p>
+            </div>
+            <p>The Pico will reboot automatically, and will then run its calibration routine. Allow the Pico to finish its calibration routine without interference.</p>
+        </li>
+    </ol>
+    
+    <p>The calibration script will have saved parameters onto the Pico’s memory. We can now flash the firmware that will run on the Pico during operation.</p>
+    <p>Repeat step 2 above to put the Pico to bootloader mode, but this time run</p>
+    <div class="commands">
+        <p>$ <span class="code">cd ~/Robot-Navigation-SLAM/mbot_firmware</span></p>
+        <p>$ <span class="code">sudo picotool load build/src/mbot.uf2</span></p>
+        <p>$ <span class="code">sudo picotool reboot</span></p>
+    </div>
+
+    <h2>Method #2 Disconnect the power</h2>
+    <ol>
+        <li>Initiate a remote connection with VSCode.</li>
+        <li>Temporarily disconnect the Control Board by removing both the battery’s barrel plug and USB-C while keeping the Jetson powered on. Ensure no cables are connected to the Control Board.</li>
+        <li>Enter the Pico bootloader mode (BOOTSEL mode) in the following order: press and hold the BOOTSEL button on the board; reconnect the USB-C to Pico (while holding down the BOOTSEL button); release the button; and finally, reconnect the power barrel plug.</li>
+        <img src="path/to/your/image.png" alt="Bootloader Mode">
+        <li>Upload the calibration file by entering the following commands:
+        <div class="commands">
+            <p>$ <span class="code">cd ~/Robot-Navigation-SLAM/mbot_firmware</span></p>
+            <p>$ <span class="code">sudo picotool load build/tests/mbot_calibrate_classic.uf2</span></p>
+        </div>
+        </li>
+        <li>Place the MBot on the floor in a spot with at least 2 feet of clear space all around the robot.
+            <div class="commands">
+                <p>$ <span class="code">sudo picotool reboot</span></p>
+            </div>
+        </li>
+        <li>The Pico will reboot automatically, and will then run its calibration routine. Allow the Pico to finish its calibration routine without interference.</li>
+    </ol>
+    
+    <p>The calibration script will have saved parameters onto the Pico’s memory. We can now flash the firmware that will run on the Pico during operation.</p>
+    <p>Repeat step 2 and 3 above to put the Pico to bootloader mode, but this time run</p>
+    <div class="commands">
+        <p>$ <span class="code">cd ~/Robot-Navigation-SLAM/mbot_firmware</span></p>
+        <p>$ <span class="code">sudo picotool load build/src/mbot.uf2</span></p>
+        <p>$ <span class="code">sudo picotool reboot</span></p>
+    </div>
+</body>
+</html>

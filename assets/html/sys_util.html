@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update System Utilities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .note {
+            background-color: #f5f5f5;
+            border-left: 6px solid #673ab7;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 90%;
+        }
+    </style>
+</head>
+<body>
+    <h2>Update system utilities</h2>
+    <p>With the setup now complete, you have the capability to connect to your MBot remotely through <strong>the VSCode terminal</strong>.</p>
+    <p>Firstly establish a remote connection to your MBot. Once the remote connection is set, open a terminal within VSCode. In the VSCode terminal, navigate to the home directory by entering the command <code>cd ~</code>.</p>
+    <p>In the home directory, you will find a folder named <code>mbot_sys_utils</code> (Otherwise clone it from <a href="https://github.com/MBot-Project-Development/mbot_sys_utils.git">mbot_sys_utils</a>). The <code>mbot_sys_utils</code> has been updated after the OS image was generated, and we need to update the settings accordingly. This step is essential for the firmware set up later.</p>
+    <div class="note">
+        <p><strong>Note:</strong> Your laptop is now just a gateway for the SSH connection to your MBot. All programming is executed on the MBot, not on your laptop. When we mention opening a terminal in this guide later, we’re referring to using a VSCode terminal to access your MBot.</p>
+    </div>
+    <ol>
+        <li>
+            <p>Pull the latest changes from the <code>mbot_sys_utils</code> repository using the following commands:</p>
+            <pre><code>cd ~/mbot_sys_utils
+ git pull</code></pre>
+        </li>
+        <li>
+            <p>Append the last line of <code>mbot_config.txt</code> to the system configuration:</p>
+            <pre><code>tail -n 1 mbot_config.txt | sudo tee -a /boot/firmware/mbot_config.txt > /dev/null</code></pre>
+            <p>To verify the update, execute the command below, and you should see the output “autostart=run” in your terminal. Ensure this output is present before proceeding to the next step.</p>
+            <pre><code>tail -n 1 /boot/firmware/mbot_config.txt && echo ""</code></pre>
+            <p>If there is no output “autostart=run” in your terminal, check your <code>mbot_config.txt</code> file by running</p>
+            <pre><code>sudo nano /boot/firmware/mbot_config.txt</code></pre>
+            <ul>
+                <li>If “autostart=run” is not at a new line at the bottom of the file, but append after <code>mbot_ip_list_token</code>, please move it to the next line and save the file.</li>
+                <li>This issue depends how you edit your <code>mbot_config.txt</code> after flashing the SD card. Some editing tools automatically insert a newline character at the end of the last line, preventing this issue from occurring, while others do not.</li>
+            </ul>
+        </li>
+        <li>
+            <p>Install the services manually:</p>
+            <pre><code>cd ~/mbot_sys_utils/services
+ ./install_mbot_services.sh</code></pre>
+        </li>
+        <li>
+            <p>After installation, power off the device, your VS Code connection will drop at this point, then turn the power back on and reconnect to the MBot using VS Code.</p>
+        </li>
+        <li>
+            <p>Ensure the updates are properly loaded by checking the log:</p>
+            <pre><code>code /var/log/mbot/mbot_start_networking.log</code></pre>
+            <p>At the bottom of this log file, if you see the message “Autostart is set to run”, that means your update was successful.</p>
+            <pre><code>===== 2023-10-24 22:09:19 =====
+hostname set to 'mbot-0000-example'
+Connected to active WiFi network 'example'. Done.
+Autostart is set to run</code></pre>
+        </li>
+    </ol>
+</body>
+</html>

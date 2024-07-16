@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install the rest of the MBot Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 90%;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            border-left: 6px solid #ffeb3b;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Install the rest of the MBot Code</h2>
+    <ol>
+        <li>
+            <p>Clone the necessary repos to your Jetson under folder <code>Robot-Navigation-SLAM</code></p>
+            <ul>
+                <li><a href="https://github.com/MBot-Project-Development/rplidar_lcm_driver">Clone RP Lidar Driver</a> and <a href="https://github.com/MBot-Project-Development/mbot_bridge">MBot Bridge</a></li>
+            </ul>
+        </li>
+        <li>
+            <p>Install the MBot Web App</p>
+            <ol type="a">
+                <li>
+                    <p>Download the latest web app release and unpack it</p>
+                    <div class="code-block">
+                        <pre><code>cd ~/Robot-Navigation-SLAM
+wget https://github.com/MBot-Project-Development/mbot_web_app/releases/download/v1.1.0/mbot_web_app-v1.1.0.tar.gz
+tar -xvzf mbot_web_app-v1.1.0.tar.gz</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <p>Install the web app dependencies</p>
+                    <div class="code-block">
+                        <pre><code>cd mbot_web_app-v1.1.0/
+./install_nginx.sh
+./install_python_deps.sh</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <p>Build and install the app</p>
+                    <div class="code-block">
+                        <pre><code>./deploy_app.sh --no-rebuild</code></pre>
+                    </div>
+                </li>
+            </ol>
+            <div class="highlight">
+                <p>The web app should now be available! You don’t have to re-run any of these steps; the web app will automatically start when you start the robot.</p>
+            </div>
+            <div class="note">
+                <p>You can use the web app by going to your browser and typing in the robot’s IP address. If the firmware is flashed and the serial server is running, you should be able to drive the robot through the webapp. Toggle drive mode on then use the keys WSQE to drive the robot.</p>
+            </div>
+        </li>
+        <li>
+            <p>Install the RPLidar driver</p>
+            <div class="code-block">
+                <pre><code>cd ~/Robot-Navigation-SLAM/rplidar_lcm_driver/
+./scripts/install.sh</code></pre>
+            </div>
+        </li>
+        <li>
+            <p>Install the MBot Autonomy code</p>
+            <div class="code-block">
+                <pre><code>cd ~/Robot-Navigation-SLAM/mbot_autonomy/
+./scripts/install.sh</code></pre>
+            </div>
+            <p>The autonomy code includes SLAM and a motion controller program.</p>
+        </li>
+        <li>
+            <p>Install the MBot Bridge and API</p>
+            <div class="code-block">
+                <pre><code>cd ~/Robot-Navigation-SLAM/mbot_bridge/
+./scripts/install.sh</code></pre>
+            </div>
+            <p>The MBot Bridge includes a server that bridges our code with the MBot software, as well as APIs in C++ and Python.</p>
+        </li>
+    </ol>
+</body>
+</html>

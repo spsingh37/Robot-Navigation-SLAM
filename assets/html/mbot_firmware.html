@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set up MBot firmware</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 90%;
+        }
+        .warning {
+            background-color: #ffdddd;
+            border-left: 6px solid #f44336;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Set up MBot firmware</h2>
+    <p>In this session, we are going to work on setup of the Control Board.</p>
+
+    <h3>1. Compile the firmware files</h3>
+    <ol>
+        <li>
+            <p>Now we'll clone our MBot repo. Open a new Terminal in the VSCode remote session:</p>
+            <div class="code-block">
+                <pre><code>cd ~
+git clone https://github.com/SuryaPratapSingh37/Robot-Navigation-SLAM.git</code></pre>
+            </div>
+        </li>
+        <li>
+            <p>Compile the firmware code to get <code>.uf2</code> binary files</p>
+            <ol type="a">
+                <li>
+                    <p>Install lcm related stuff</p>
+                    <div class="code-block">
+                        <pre><code>cd ~/Robot-Navigation-SLAM/mbot_lcm_base
+./scripts/install.sh</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <p>Run the firmware setup script</p>
+                    <div class="code-block">
+                        <pre><code>cd ~/Robot-Navigation-SLAM/mbot_firmware
+./setup.sh</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <p>Build firmware</p>
+                    <div class="code-block">
+                        <pre><code>cd ~/Robot-Navigation-SLAM/mbot_firmware
+mkdir build
+cd build
+cmake ..
+make</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <p>Now you will have 2 relevant <code>.uf2</code> files under <code>/build</code></p>
+                    <ul>
+                        <li>The calibration script, <code>mbot_firmware/build/tests/mbot_calibrate_classic.uf2</code></li>
+                        <li>The MBot firmware, <code>mbot_firmware/build/src/mbot.uf2</code></li>
+                    </ul>
+                </li>
+            </ol>
+        </li>
+    </ol>
+
+    <h3>2. Calibrate the MBot and flash the firmware</h3>
+    <p>In this step, we are going to flash the calibration script onto the Pico to calibrate it before we flash the firmware.</p>
+    <ol>
+        <li>
+            <p>Place the MBot on the floor in a spot with at least 2 feet of clear space all around the robot, preferably on the same type of surface that you plan to use the robots on.</p>
+        </li>
+        <li>
+            <p>Run the following command, the Pico will reboot automatically, and will then run its calibration routine right away. Allow the Pico to finish its calibration routine without interference.</p>
+            <div class="warning">
+                <p><strong>WARNING</strong><br>Hold off on running this command until the robot is placed on the floor.</p>
+            </div>
+            <div class="code-block">
+                <pre><code>cd ~/Robot-Navigation-SLAM/mbot_firmware
+# upload the calibration scripts
+sudo ./upload.sh flash build/tests/mbot_calibrate_classic.uf2</code></pre>
+            </div>
+            <p>Note that during the calibration routine, the robot should turn in a counterclockwise circle first, then turn clockwise. If it is not executing in this order, you might have wrong motor polarity. Modify it in the <code>mbot_firmware/tests/mbot_calibrate_classic.c</code> to be either 1 or -1.</p>
+            <div class="code-block">
+                <pre><code>#define MOT_LEFT_POL 1
+#define MOT_RIGHT_POL 1</code></pre>
+            </div>
+        </li>
+        <li>
+            <p>The calibration script will have saved parameters onto the Pico's memory. We can now flash the firmware that will run on the Pico during operation.</p>
+            <div class="code-block">
+                <pre><code>cd ~/Robot-Navigation-SLAM/mbot_firmware
+sudo ./upload.sh flash build/src/mbot.uf2</code></pre>
+            </div>
+        </li>
+    </ol>
+
+    <h3>3. Using Minicom to verify</h3>
+    <p>Here we introduce you to the tool Minicom. It is a program designed for serial communication that connects devices to a Linux PC via serial ports. We will use Minicom to read the Pico printouts from the Jetson module.</p>
+    <ol>
+        <li>
+            <p>After flashing the firmware to the Pico, run the following command to start Minicom:</p>
+            <div class="code-block">
+                <pre><code>minicom -D /dev/mbot_tty -b 115200</code></pre>
+            </div>
+            <p><code>-D</code> indicates the serial port device, and <code>-b</code> sets the communication speed or baud rate.</p>
+            <p>If the Minicom command doesn’t work, run this:</p>
+            <div class="code-block">
+                <pre><code>ls /dev | grep mbot</code></pre>
+            </div>
+            <div class="code-block">
+                <pre><code>mbot@mbot-0018-shaw:/dev$ ls /dev | grep mbot
+mbot_lcm
+mbot_tty</code></pre>
+            </div>
+            <p>If you do not see the 2 outputs above, unplug the USB which connects Jetson and Pico, then plug it back in.</p>
+            <p>To exit Minicom, press <code>CTRL-A</code> to get to command mode, then press <code>X</code> to quit.</p>
+        </li>
+    </ol>
+    <p><strong>Successful Firmware Flashing:</strong> After flashing the firmware successfully, Minicom will display your encoder counts, IMU values, and more. Manually turning the wheel will update the encoder counts in the Minicom terminal.</p>
+    <p><strong>Unsuccessful Firmware Flashing:</strong> If the firmware doesn’t flash correctly, repeat the calibration and firmware flashing steps. Open a second terminal window with Minicom to monitor its outputs for troubleshooting.</p>
+    <div class="note">
+        <p>To make running Minicom easier, consider creating a permanent alias by editing your <code>.bashrc</code> file. Add the line <code>alias start-minicom='minicom -D /dev/mbot_tty -b 115200'</code> to the end of your <code>.bashrc</code> file, then run the command <code>source ~/.bashrc</code> in a terminal. This will let you run Minicom using the command <code>start-minicom</code>.</p>
+    </div>
+
+    <h3>4. Manually enter bootloader mode</h3>
+    <p>If the firmware was successfully flashed, skip this step and proceed to the next.</p>
+    <p>If your firmware flashing was not successful because the <code>./upload.sh</code> script from step two doesn’t work for your MBot, you can manually enter the bootloader mode (namely let Pico ready to get the firmware) by following instructions <a href="https://drive.google.com/file/d/1fQGzUjOiDitJgTfo1G5FOXoY8QaFX0n7/view?usp=sharing">here</a>.</p>
+</body>
+</html>

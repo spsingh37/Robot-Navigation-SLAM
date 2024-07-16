@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set up Jetson Nano System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #2c3e50;
+        }
+        pre {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .warning {
+            background-color: #fdecea;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #721c24;
+        }
+        .warning strong {
+            color: #f45b5b;
+        }
+        .note {
+            background-color: #ede7f6; /* Light purple background */
+            border-left: 6px solid #673ab7; /* Darker purple left border */
+            padding: 15px;
+            border-radius: 5px; /* Rounded corners */
+            margin: 20px 0;
+            color: #333; /* Text color */
+        }
+        .note strong {
+            color: #673ab7; /* Bold text color */
+        }
+        .highlight {
+            background-color: #fff8dc; /* Use the desired background color */
+            border-left: 5px solid #ffcc00; /* Use the desired border color */
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .highlight strong {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Set up Jetson Nano System</h2>
+
+    <h3>1. Flash the image</h3>
+    <ol>
+        <li>Download the custom Jetson image <code>jetson-rob550_oct19.img.xz</code> from this <a href="https://www.dropbox.com/scl/fi/yxhb7gynpxxj639clfbpt/jetson-rob550_oct19.img.xz?rlkey=fq3c2ltk3bkr0fr8vvd1i4u4h&dl=0">link</a>. We use a custom image with Ubuntu 20.04 instead of the official image from NVIDIA because the official uses Ubuntu 18.04, which is outdated.</li>
+        <li>Download <a href="https://etcher.balena.io/">Balena Etcher</a> then flash the OS image to your SD card. Plug in the SD card to your laptop using SD card reader then follow the steps in Balena Etcher.</li>
+    </ol>
+    <p>You now have an SD card with Ubuntu 20.04 flashed on it for the Jetson. Keep the card in your laptop for now and proceed to the next step.</p>
+    <div class="warning">
+        <strong>WARNING</strong>
+        <p>If you do the flashing on a Windows computer, you may see many file explorer windows and error messages pop up when you insert the SD card and when you finish flashing. Those are expected, and you can safely close the file explorer windows and dismiss the error messages. However, if Windows asks you to format the SD card through a popup dialog box, close the message through the “Cancel” button and <strong>do not</strong> click the “Format Disk” button.</p>
+    </div>
+
+    <h3>2. Set up system utilities</h3>
+    <p>If the flash succeeded, the SD card will have two partitions: a 134MB Volume formatted as fat32 and a 27GB Volume formatted as ext4. When you insert the SD card in your laptop, it should mount the smaller fat32 partition. Find the file <code>mbot_config.txt</code> on this volume and modify it as follows:</p>
+    <ul>
+        <li>Set the <code>mbot_hostname</code> as per your choice</li>
+        <li>Enter your Wi-Fi details for <code>new_wifi_ssid</code> and <code>new_wifi_password</code> if you intend to use it at a different network later.</li>
+    </ul>
+
+    <h3>3. Boot the Jetson Nano</h3>
+    <ol>
+        <li>Insert the SD card into your Jetson. The SD card slot is located on the side opposite the USB ports.</li>
+        <div style="width: 20%; text-align: left;">
+            <img style="width:100%" src="https://drive.google.com/file/d/1m1Du2xcbz7UtxjZodsmWovjqaQ_ccdhg/view?usp=sharing">
+        </div>
+        <li>Turn on the power bank and ensure that the power cables are connected as per the assembly guide.</li>
+        <li>Please allow a minute or so for it to initialize. Once the initialization is complete, the OLED screen on the side of the mbot will display the MBot’s IP address. This information is crucial for connecting to your MBot remotely.</li>
+        <li>You can check your mbot’s IP address on the OLED screen; you can also locate your MBot’s IP address through the <a href="https://gitlab.eecs.umich.edu">MBot IP registry</a> repository:</li>
+        <ul>
+            <li>Go to the repository’s history, search for the hostname of your MBot, which you established in the <code>mbot_config.txt</code> file. Within the history, find the JSON file corresponding to your MBot’s hostname. This file contains your MBot’s IP address among other details.</li>
+        </ul>
+    </ol>
+
+    <h3>4. VSCode Remote - SSH extension</h3>
+    <p>In this step, we are going to establish remote access using the VSCode extension. After this setup, you will be able to access the Jetson remotely using your laptop.</p>
+    <ol>
+        <li>Open VSCode on your laptop, and install the <code>Remote - SSH</code> extension</li>
+        <div style="width: 50%; text-align: left;">
+            <img style="width:100%" src="html/vscode_remotessh.png">
+        </div>
+        <li>After installing the <code>Remote - SSH</code> extension, a new “Remote Explorer” icon will appear on the side panel. This is where you can add the SSH connection to your mbot. Click the New Remote <code>+</code> icon as shown below:</li>
+        <div style="width: 40%; text-align: left;">
+            <img style="width:100%" src="html/vscode_remotessh1.png">
+        </div>
+        <li>When the prompt window pops up, enter the connection command: <code>ssh mbot@your_mbot_ip_address</code>. Your IP address can be found in the IP registry and on the OLED screen.</li>
+        <div style="width: 40%; text-align: left;">
+            <img style="width:100%" src="html/vscode_remotessh2.png">
+        </div>
+        <li>Select the default config file. Note that different operating systems may have different paths, but this isn’t necessarily a problem. Here in the image, we select the one that contains user name.</li>
+        <div style="width: 40%; text-align: left;">
+            <img style="width:100%" src="html/vscode_remotessh3.png">
+        </div>
+        <li>Navigate to the “Remote Explorer” tab and click the refresh button. You should see your Jetson’s IP address listed under the SSH section, indicating that your connection has been saved.</li>
+    </ol>
+    <ul>
+        <li><b>To start a remote connection:</b> Click on “Connect in New Window” and enter the password <code>i<3robots!</code>. After this, your SSH session should be up and running.</li>
+        <li><b>To end a remote connection:</b> Click on the tab at the bottom left corner of the VS Code window labeled SSH: xx.x.xxx.xx. A pop-up menu will appear with the option to “close remote connection”.</li>
+    </ul>
+    <div class="note">
+        <strong>NOTE</strong>
+        <p>Username: mbot<br>
+        Password: i<3robots!</p>
+    </div>
+    <div class="highlight">
+        <strong>HIGHLIGHT</strong>
+        <p>At this point, you should be able to connect to your MBot using VSCode extension.</p>
+    </div>
+    
+    <p>To use the mbot on a different network (say at home):</p>
+    <ul>
+        <li>Firstly turn on the mbot at home. It will automatically connect to your Wi-Fi if you entered your home Wi-Fi details in the <code>mbot_config.txt</code> file. Replicate the 5 steps above to add your mbot’s IP address at home to your VSCode remote connections. Once done, you will be able to remotely access your mbot at home.</li>
+    </ul>
+
+    <h3>5. Remote Desktop access - NoMachine</h3>
+    <p>In this step, we are going to set up NoMachine access. Upon completion, you will be able to access the Jetson with a Desktop UI.</p>
+    <ol>
+        <li>Download NoMachine to your laptop from the <a href="https://www.nomachine.com">official site</a>. NoMachine is a remote access software and it is pre-installed on our customized Jetson.</li>
+        <li>Connect to Jetson using NoMachine:</li>
+        <ul>
+            <li>Open NoMachine on your laptop, connect to Jetson as shown in the image below. You will need your IP address for this step.</li>
+            <div style="width: 40%; text-align: left;">
+                <img style="width:100%" src="html/nomachine.png">
+            </div>
+            <li>Finally, enter the username: <code>mbot</code>, password: <code>i<3robots!</code> to log in.</li>
+            <li>Note: if the NoMachine desktop freezes, you can always restart the robot by turning the power off and then back on.</li>
+        </ul>
+    </ol>
+
+    <h3>6. Change your mbot’s password</h3>
+    <p>For mbot network security, we encourage you to change your password once you have set up your mbot. The default password is <code>i<3robots!</code>, which everyone uses. You can reset your password to anything you prefer. Here’s how to change your mbot’s password:</p>
+    <ol>
+        <li>Open a VSCode terminal on your laptop.</li>
+        <li>Enter this command: <code>passwd</code>. You will be prompted to enter your current password.</li>
+        <li>Next, you will be asked to enter your new password and retype it to confirm.</li>
+        <li>If the passwords match, you will see a message indicating that your password has been updated successfully.</li>
+    </ol>
+    <pre>
+    $  passwd
+    Changing password for mbot.
+    Current password: 
+    New password: 
+    Retype new password: 
+    passwd: password updated successfully
+    </pre>
+    <div class="highlight">
+        <strong>HIGHLIGHT</strong>
+        <p>Now you have completed all the setup for Jetson!</p>
+    </div>
+</body>
+</html>
