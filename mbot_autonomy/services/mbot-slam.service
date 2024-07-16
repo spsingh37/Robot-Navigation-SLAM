@@ -1,0 +1,14 @@
+[Unit]
+Description=MBot SLAM service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5
+ExecStart=mbot_slam --num-particles 200 --map /home/mbot/current.map --listen-for-mode
+User=mbot
+
+[Install]
+WantedBy=network-online.target

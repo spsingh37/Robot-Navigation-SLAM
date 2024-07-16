@@ -1,0 +1,7 @@
+# Standard Ignores
+build/
+*.o
+*.so
+*.a
+.vscode/
+.DS_Store

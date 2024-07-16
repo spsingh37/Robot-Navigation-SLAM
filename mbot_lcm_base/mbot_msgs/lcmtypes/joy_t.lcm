@@ -1,0 +1,30 @@
+package mbot_lcm_msgs;
+// Joystick message based on a PS3 controller
+struct joy_t 
+{
+    int64_t timestamp;
+    float left_analog_X;
+    float left_analog_Y;
+    float right_analog_X;
+    float right_analog_Y;
+    float right_trigger;
+    float left_trigger;
+    float dpad_X;
+    float dpad_Y;
+    int8_t button_A;
+    int8_t button_B;
+    int8_t button_2; // not used
+    int8_t button_X;
+    int8_t button_Y;
+    int8_t button_5; // not used
+    int8_t button_l1;
+    int8_t button_r1;
+    int8_t button_l2;
+    int8_t button_r2;
+    int8_t button_select;
+    int8_t button_start;
+    int8_t button_12; // not used
+    int8_t button_left_analog;
+    int8_t button_right_analog;
+    int8_t button_15; //not used
+}

@@ -1,0 +1,9 @@
+package mbot_lcm_msgs;
+
+struct pose2D_t
+{
+    int64_t utime;
+    float x;
+    float y;
+    float theta;
+}

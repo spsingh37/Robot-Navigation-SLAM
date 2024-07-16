@@ -1,0 +1,14 @@
+[Unit]
+Description=MBot Motion Controller
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5
+ExecStart=mbot_motion_controller
+User=root
+
+[Install]
+WantedBy=network-online.target

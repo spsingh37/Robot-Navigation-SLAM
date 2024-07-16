@@ -1,0 +1,8 @@
+package mbot_lcm_msgs;
+// Motor velocity command for the 3 motors
+// on the MBot Control Board
+struct mbot_motor_vel_t
+{
+    int64_t utime;
+    float velocity[3]; // [rad/s]
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=LCM Serial Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+PIDFile=/run/mbot_lcm_serial.pid
+ExecStart=/usr/local/bin/lcm_serial_server --PIDFile /run/mbot_lcm_serial.pid
+Restart=always
+RestartSec=5
+#User=mbot
+#Group=mbot
+
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,3 @@
+@PACKAGE_INIT@
+
+include ( "${CMAKE_CURRENT_LIST_DIR}/mbot_lcm_msgsTargets.cmake" )

@@ -1,0 +1,11 @@
+package mbot_lcm_msgs;
+
+struct lidar_t
+{
+    int64_t utime;
+    int32_t num_ranges;
+    float   ranges[num_ranges];         // Measured range [m]
+    float   thetas[num_ranges];         // Measurement angle [rad]
+    int64_t times[num_ranges];          // Measurement timestamp [usec]
+    float   intensities[num_ranges];    // Measurement intensity [no units]
+}

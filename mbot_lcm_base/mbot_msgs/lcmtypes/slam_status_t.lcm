@@ -1,0 +1,9 @@
+package mbot_lcm_msgs;
+
+struct slam_status_t
+{
+    int64_t utime;
+
+    int32_t slam_mode;          // mapping_only=0, action_only=1, localization_only=2, full_slam=3
+    string map_path;            // Path to where the map is stored.
+}

@@ -1,0 +1,8 @@
+package mbot_lcm_msgs;
+
+struct mbot_apriltag_array_t
+{
+    int64_t utime;
+    int32_t array_size;
+    mbot_apriltag_t detections[array_size]; 
+}

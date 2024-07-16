@@ -1,0 +1,11 @@
+// planner_request_t request for planner
+package mbot_lcm_msgs;
+
+struct planner_request_t
+{
+    int64_t utime;
+    pose2D_t goal;
+    boolean require_plan;
+}
+
+

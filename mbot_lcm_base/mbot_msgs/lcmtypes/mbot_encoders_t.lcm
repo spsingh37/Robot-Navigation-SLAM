@@ -1,0 +1,9 @@
+package mbot_lcm_msgs;
+
+struct mbot_encoders_t
+{
+    int64_t utime;
+    int64_t ticks[3]; // no units
+    int32_t delta_ticks[3]; // no units
+    int32_t delta_time; // [usec]
+}

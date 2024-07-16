@@ -1,0 +1,11 @@
+package mbot_lcm_msgs;
+
+struct pose3D_t
+{
+    int64_t utime;
+    float x;
+    float y;
+    float z;
+    float angles_rpy[3];
+    float angles_quat[4];
+}

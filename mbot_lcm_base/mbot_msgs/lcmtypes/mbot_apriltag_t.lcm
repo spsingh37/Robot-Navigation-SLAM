@@ -1,0 +1,7 @@
+package mbot_lcm_msgs;
+
+struct mbot_apriltag_t
+{
+    int32_t tag_id;
+    pose3D_t pose;
+}

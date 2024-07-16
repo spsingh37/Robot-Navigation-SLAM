@@ -1,0 +1,9 @@
+package mbot_lcm_msgs;
+
+struct twist2D_t
+{
+    int64_t utime;
+    float vx;
+    float vy; // this should be 0 when use differential drive 
+    float wz;
+}

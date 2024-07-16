@@ -1,0 +1,10 @@
+// robot_path_t defines a path through the environment as a sequence of path2D_t 
+package mbot_lcm_msgs;
+
+struct path2D_t
+{
+    int64_t utime;                      // Time of path creation
+
+    int32_t path_length;                // Number of poses in the path
+    pose2D_t path[path_length];    // Sequence of poses that make up the path
+}

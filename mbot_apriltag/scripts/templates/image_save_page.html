@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Stream</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent scrollbars */
+            background-color: black; /* Optional: Set background color to black */
+        }
+        .video-container {
+            width: 100%;
+            height: 100vh; /* Adjust this value to fit your needs */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+        .image-container img {
+            display: block;
+            max-width: 100%; /* Limit width to 100% of container */
+            max-height: 100vh; /* Limit height to 100% of viewport height */
+            width: auto; /* Allow image to scale down */
+            height: auto; /* Allow image to scale down */
+            object-fit: contain;
+        }
+        #save-image {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            font-size: 20px;
+            background-color: white;
+            border: 1px solid black; /* Add border for visibility */
+            transition: background-color 0.3s, transform 0.1s; /* Smooth transition for visual effects */
+        }
+        #save-image:active {
+            background-color: #393838; /* Slightly change color when active/clicked */
+            transform: translateY(2px); /* Slight movement to mimic button press */
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <div class="image-container">
+            <img src="/video" alt="Video Stream">
+            <button type="button" id="save-image">Save image</button>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#save-image').click(function(){
+            // Send the path to the Flask server using AJAX
+            $.ajax({
+                type: 'POST',
+                url: '/save-image',
+                success: function(response) {
+                    console.log(response.message); // Log the response from the server
+                },
+                error: function(error) {
+                    console.log('Error saving image:', error);
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

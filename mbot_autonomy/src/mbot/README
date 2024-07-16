@@ -1,0 +1,10 @@
+=== Files ===
+
+= drive_square.cpp
+    - implementation of drive_square, which you'll use to test your odometry and motion controller.
+    - you don't need to edit this program, but might find it useful to see how to send commands
+      to the motion_controller.
+      
+= motion_controller.cpp
+    - definition of the motion_controller program for the Mbot.
+    - utilizes Rotate-Translate-Rotate process for waypoint navigation.

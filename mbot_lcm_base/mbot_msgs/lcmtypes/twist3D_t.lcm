@@ -1,0 +1,12 @@
+package mbot_lcm_msgs;
+
+struct twist3D_t
+{
+    int64_t utime;
+    float vx;
+    float vy;
+    float vz;
+    float wx;
+    float wy;
+    float wz;
+}
